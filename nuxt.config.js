@@ -11,6 +11,9 @@ const config = {
   env: {
     ...envConfig
   },
+  sitemap: {
+    hostname: "/sitemap.xml"
+  },
   publicRuntimeConfig: {
     appKey: 'vsf2spcon',
     appVersion: Date.now(),
