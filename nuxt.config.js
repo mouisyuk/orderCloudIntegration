@@ -12,7 +12,7 @@ const config = {
     ...envConfig
   },
   sitemap: {
-    hostname: "/sitemap.xml"
+    hostname: "https://vercel.com/mouisyuk/order-cloud-integration/sitemap.xml"
   },
   publicRuntimeConfig: {
     appKey: 'vsf2spcon',
