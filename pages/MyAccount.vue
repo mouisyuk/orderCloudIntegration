@@ -1,6 +1,7 @@
 <template>
   <div id="account">
-    <SfBreadcrumbs class="breadcrumbs" :breadcrumbs="breadcrumbs">
+    <h1>My account</h1>
+    <!-- <SfBreadcrumbs class="breadcrumbs" :breadcrumbs="breadcrumbs">
       <template #link="{breadcrumb}">
         <nuxt-link
           :data-testid="breadcrumb.text"
@@ -41,7 +42,7 @@
       </SfContentPage>
 
       <SfContentPage data-cy="account-page_log-out" title="Log out" />
-    </SfContentPages>
+    </SfContentPages> -->
   </div>
 </template>
 <script type="module">
@@ -71,51 +72,51 @@ export default {
   middleware: 'authenticated',
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup(props, context) {
-    const { $router, $route } = context.root;
-    const { logout, load: loadUser, user: userInfo} = useUser();
-    const { loading: newsLetterLoading, content: NewsletterStatus, search: UpdateNewsletterPreference } = useContent('UpdateNewsletterPreference');
-    const { send: sendNotification} = useUiNotification();
-    let userToken = ref('');
+    // const { $router, $route } = context.root;
+    // const { logout, load: loadUser, user: userInfo} = useUser();
+    // const { loading: newsLetterLoading, content: NewsletterStatus, search: UpdateNewsletterPreference } = useContent('UpdateNewsletterPreference');
+    // const { send: sendNotification} = useUiNotification();
+    // let userToken = ref('');
 
-    userToken = computed(() => userGetters.getToken(userInfo.value));
-    const acceptsMarketing = computed(() => userGetters.AcceptsMarketingStatus(userInfo.value));
-    const email = computed(() => userGetters.getEmailAddress(userInfo.value));
-    const id = computed(() => userGetters.getCleanID(userInfo.value));
+    // userToken = computed(() => userGetters.getToken(userInfo.value));
+    // const acceptsMarketing = computed(() => userGetters.AcceptsMarketingStatus(userInfo.value));
+    // const email = computed(() => userGetters.getEmailAddress(userInfo.value));
+    // const id = computed(() => userGetters.getCleanID(userInfo.value));
 
-    if (userToken.value === '') {
-      $router.push('/');
-      return;
-    }
-    const activePage = computed(() => {
-      const { pageName } = $route.params;
+    // if (userToken.value === '') {
+    //   $router.push('/');
+    //   return;
+    // }
+    // const activePage = computed(() => {
+    //   const { pageName } = $route.params;
 
-      if (pageName) {
-        return (pageName.charAt(0).toUpperCase() + pageName.slice(1)).replace('-', ' ');
-      }
+    //   if (pageName) {
+    //     return (pageName.charAt(0).toUpperCase() + pageName.slice(1)).replace('-', ' ');
+    //   }
 
-      return 'My profile';
-    });
+    //   return 'My profile';
+    // });
 
-    const changeActivePage = async (title) => {
-      if (title === 'Log out') {
-        await logout();
-        sendNotification({
-          key: 'logout_success',
-          message: 'You are successfully logged out',
-          type: 'success',
-          icon: 'check',
-          title: 'Loguut success'
-        });
-        $router.push('/');
-        return;
-      }
+    // const changeActivePage = async (title) => {
+    //   if (title === 'Log out') {
+    //     await logout();
+    //     sendNotification({
+    //       key: 'logout_success',
+    //       message: 'You are successfully logged out',
+    //       type: 'success',
+    //       icon: 'check',
+    //       title: 'Loguut success'
+    //     });
+    //     $router.push('/');
+    //     return;
+    //   }
 
-      $router.push(`/my-account/${(title || '').toLowerCase().replace(' ', '-')}`);
-    };
-    onSSR(async () => {
-      await loadUser();
-    });
-    return { loadUser, changeActivePage, activePage, acceptsMarketing, UpdateNewsletterPreference, email, id, NewsletterStatus, sendNotification, newsLetterLoading };
+    //   $router.push(`/my-account/${(title || '').toLowerCase().replace(' ', '-')}`);
+    // };
+    // onSSR(async () => {
+    //   await loadUser();
+    // });
+    // return { loadUser, changeActivePage, activePage, acceptsMarketing, UpdateNewsletterPreference, email, id, NewsletterStatus, sendNotification, newsLetterLoading };
   },
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   data() {

@@ -139,10 +139,12 @@ export default {
     const accountIcon = computed(() =>
       props.isUserAuthenticated ? 'profile_fill' : 'profile'
     );
+    const meStore = useMeStore();
 
     const categories = computed(() => {
+      const ocCategories = meStore.categories?.Items ?? [];
       return [
-        ...meStore.categories.Items,
+        ...ocCategories,
         {
           Name: 'Tutorials',
           ID: v4(),
@@ -189,7 +191,6 @@ export default {
     //   term.value = '';
     //   isSearchOpen.value = false;
     // };
-    const meStore = useMeStore();
 
 
     // searchResults.value = {
