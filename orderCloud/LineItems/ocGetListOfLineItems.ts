@@ -1,6 +1,6 @@
 import { LineItems } from 'ordercloud-javascript-sdk';
 
-const getListOfLineItems = async ({direction, orderID}) => {
+const ocGetListOfLineItems = async ({direction, orderID}) => {
     try {
         return await LineItems.List(direction, orderID);
     } catch (err) {
@@ -8,4 +8,4 @@ const getListOfLineItems = async ({direction, orderID}) => {
     }
 };
 
-export default getListOfLineItems;
+export default ocGetListOfLineItems;

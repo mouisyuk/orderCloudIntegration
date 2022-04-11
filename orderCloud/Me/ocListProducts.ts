@@ -1,6 +1,6 @@
-import { Products, Me } from 'ordercloud-javascript-sdk';
+import { Me } from 'ordercloud-javascript-sdk';
 
-const listProducts = async (listOptions?) => {
+const ocListProducts = async (listOptions?) => {
     try {
         return await Me.ListProducts({catalogID: '0001', ...listOptions});
     } catch(err) {
@@ -8,4 +8,4 @@ const listProducts = async (listOptions?) => {
     }
 };
 
-export default listProducts;
+export default ocListProducts;

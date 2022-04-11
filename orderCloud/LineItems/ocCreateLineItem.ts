@@ -1,6 +1,6 @@
 import { LineItems } from 'ordercloud-javascript-sdk';
 
-const createLineItem = async ({direction, orderID, ProductID, Quantity}) => {
+const ocCreateLineItem = async ({direction, orderID, ProductID, Quantity}) => {
     try {
         return await LineItems.Create(direction, orderID, {Quantity, ProductID})
     } catch (err) {
@@ -8,4 +8,4 @@ const createLineItem = async ({direction, orderID, ProductID, Quantity}) => {
     }
 };
 
-export default createLineItem;
+export default ocCreateLineItem;

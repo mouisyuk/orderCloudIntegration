@@ -1,6 +1,6 @@
 import { Orders } from 'ordercloud-javascript-sdk';
 
-const deleteOrder = async ({direction, orderID}) => {
+const ocDeleteOrder = async ({direction, orderID}) => {
     try{
         return await Orders.Delete(direction, orderID);
     } catch (err) {
@@ -8,4 +8,4 @@ const deleteOrder = async ({direction, orderID}) => {
     }
 };
 
-export default deleteOrder;
+export default ocDeleteOrder;

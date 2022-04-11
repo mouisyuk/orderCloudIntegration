@@ -1,13 +1,11 @@
-import createNewOrder from './createNewOrder';
-import getListOfOrders from './getListOfOrders';
-import deleteOrder from './deleteOrder';
-import getWorksheet from './getWorksheet';
+import ocCreateNewOrder from './ocCreateNewOrder';
+import ocDeleteOrder from './ocDeleteOrder';
+import ocGetWorksheet from './ocGetWorksheet';
 
-const useOrders = () => ({
-    createNewOrder,
-    getListOfOrders,
-    deleteOrder,
-    getWorksheet
+const useOcOrders = () => ({
+    ocCreateNewOrder,
+    ocDeleteOrder,
+    ocGetWorksheet
 });
 
-export default useOrders;
+export default useOcOrders;

@@ -142,7 +142,7 @@ export default {
 
     const categories = computed(() => {
       return [
-        ...meStore.Categories.Items,
+        ...meStore.categories.Items,
         {
           Name: 'Tutorials',
           ID: v4(),

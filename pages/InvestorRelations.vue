@@ -9,10 +9,9 @@
             <div>
                 <img class="img-fluid" src="https://commerce-demo.brimit.com/-/media/Images/Yamama/Stats-index.ashx">
             </div>
-            </div>
-            <div class="personalized-banner text-center">
-                <img class="img-fluid" src="https://commerce-demo.brimit.com/-/media/Images/Yamama/yamamaBulding2.ashx?h=736&amp;iar=0&amp;w=1711&amp;hash=057DB22313F1FE30CBF33CEF007D64FA"/>
-            </div>
+        </div>
+        <div class="personalized-banner text-center">
+            <img class="img-fluid" src="https://commerce-demo.brimit.com/-/media/Images/Yamama/yamamaBulding2.ashx?h=736&amp;iar=0&amp;w=1711&amp;hash=057DB22313F1FE30CBF33CEF007D64FA"/>
         </div>
     </div>
 </template>

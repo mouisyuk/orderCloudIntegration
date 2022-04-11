@@ -172,7 +172,7 @@ v-e2e="'login-modal-submit'"
             </ValidationProvider>
             <ValidationProvider v-slot="{ errors }" :rules="{ required: { allowFalse: false } }">
               <SfCheckbox
-                v-model="createAccount"
+                v-model="isCreateAccount"
                 v-e2e="'login-modal-create-account'"
                 :valid="!errors[0]"
                 :error-message="errors[0]"
@@ -212,7 +212,7 @@ import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
 import { required, email } from 'vee-validate/dist/rules';
 import { useUser, useForgotPassword } from '@vue-storefront/shopify';
 import { useUiState } from '~/composables';
-import { useMeStore } from '~/store';
+import { useAuthenticationStore } from '~/store';
 
 extend('email', {
   ...email,
@@ -244,22 +244,20 @@ export default {
     const isForgotten = ref(false);
     const isThankYouAfterForgotten = ref(false);
     const userEmail = ref('');
-    const createAccount = ref(false);
+    const isCreateAccount = ref(false);
     const rememberMe = ref(false);
     const { loading, error: userError } = useUser();
     const forgotPasswordError = ref(false)
     const forgotPasswordLoading = ref(false)
     const { request } = useForgotPassword()
-    // const { request } = useForgotPassword()
-    // const { request, error: forgotPasswordError, loading: forgotPasswordLoading } = useForgotPassword();
-    const meStore = useMeStore();
+    const { createAccount, login } = useAuthenticationStore();
 
     const register = async ({user}) => {
-      await meStore.createAccount(user);
+      await createAccount(user);
     };
 
-    const login = async({user}) => {
-      await meStore.login(user);
+    const signIn = async({user}) => {
+      await login(user);
     };
 
     const error = reactive({
@@ -320,7 +318,7 @@ export default {
 
     const handleRegister = () => handleForm(register)();
 
-    const handleLogin = () => handleForm(login)();
+    const handleLogin = () => handleForm(signIn)();
 
     const handleForgotten = async () => {
       userEmail.value = form.value.Username;
@@ -338,7 +336,7 @@ export default {
       userError,
       loading,
       isLogin,
-      createAccount,
+      isCreateAccount,
       rememberMe,
       isLoginModalOpen,
       toggleLoginModal,

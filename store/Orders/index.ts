@@ -1,27 +1,25 @@
 import { defineStore } from 'pinia'
-import useOrders from '~/orderCloud/Orders';
-import useLineItems from '~/orderCloud/LineItems';
+import useOcOrders from '~/orderCloud/Orders';
 import useMeStore from '../Me';
+import useLineItemsStore from '../LineItems';
 import _ from 'lodash';
 
-const { createNewOrder, getWorksheet, deleteOrder } = useOrders();
-const { createLineItem, getListOfLineItems, deleteLineItem, updateLineItem } = useLineItems();
+const { 
+    ocCreateNewOrder,
+    ocGetWorksheet,
+    ocDeleteOrder
+} = useOcOrders();
 
 const useOrderStore = defineStore('order', {
-    state: () => ({
-        lineItems: {
-            Items: [],
-            Meta : []
-        }
-    }),
     actions: {
         async createOrder(direction) {
-            return await await createNewOrder(direction);
+            return await ocCreateNewOrder(direction);
         },
         async addProductToOrder({direction, Quantity, ProductID}) {
-            const meStore = useMeStore();
-            let order = _.get(meStore, 'orders.Items[0]');
-            const lineItemInCart = this.lineItems.Items.find( item => item.ProductID === ProductID);
+            const { orders } = useMeStore();
+            const { updateLineItem, createLineItem, lineItems } = useLineItemsStore();
+            let order = _.get(orders, 'Items[0]');
+            const lineItemInCart = lineItems.Items.find( item => item.ProductID === ProductID);
 
             if(!order) order = await this.createOrder(direction);
 
@@ -39,67 +37,29 @@ const useOrderStore = defineStore('order', {
                 orderID: order.ID
             });
         },
-        async updateQuantity({
-            direction,
-            lineItemID,
-            ProductID,
-            Quantity
-        }) {
-            const meStore = useMeStore();
-            let orderID = _.get(meStore, 'orders.Items[0].ID');
-
-            await updateLineItem({
-                direction,
-                orderID,
-                lineItemID,
-                ProductID,
-                Quantity
-            });
-
-            await this.getWorksheet({
-                direction,
-                orderID
-            });
-        },
         async deleteOrder(orderData) {
-            const meStore = useMeStore();
+            const { getMyOrders } = useMeStore();
+            const { lineItems } = useLineItemsStore();
 
-            await deleteOrder(orderData);
-            await meStore.getMyOrders({
+            await ocDeleteOrder(orderData);
+            await getMyOrders({
                 filters: {
                   Status: 'Unsubmitted'
                 }
             });
-        },
-        async getLineItems(lineItemsData) {
-            const lineItems = await getListOfLineItems(lineItemsData);
-
-            if(lineItems) this.lineItems = lineItems;
-        },
-        async deleteLineItem(lineItemID) {
-            const meStore = useMeStore();
-            let orderID = _.get(meStore, 'orders.Items[0].ID');
-
-            const response = await deleteLineItem({
-                direction: "outgoing",
-                orderID,
-                lineItemID
-            });
-
-            if(response) await this.getWorksheet({
-                direction: "outgoing",
-                orderID
-            });
+            
+            lineItems.Items = [];
         },
         async getWorksheet(worksheetData) {
-            const worksheet = await getWorksheet(worksheetData);
-
+            const worksheet = await ocGetWorksheet(worksheetData);
+            
             if(worksheet) {
-                const meStore = useMeStore();
+                const { lineItems } = useLineItemsStore();
+                const { orders } = useMeStore();
 
-                this.lineItems.Items = worksheet.LineItems;
-                if(meStore.orders.Items.length) meStore.orders.Items[0] = _.merge(meStore.orders.Items[0], worksheet.Order);
-                else meStore.orders.Items.push(worksheet.Order);
+                lineItems.Items = worksheet.LineItems;
+                if(orders.Items.length) orders.Items[0] = _.merge(orders.Items[0], worksheet.Order);
+                else orders.Items.push(worksheet.Order);
             }
         }
     }

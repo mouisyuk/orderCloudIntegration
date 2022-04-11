@@ -1,13 +1,9 @@
-import logIn  from "./login";
-import register from './register';
-import initMe from './initMe';
+import ocLogIn  from "./ocLogin";
+import ocRegister from './ocRegister';
 
-const useAuthentication = () => {
-    return {
-        logIn,
-        register,
-        initMe
-    }
-};
+const useOcAuthentication = () => ({
+    ocLogIn,
+    ocRegister
+});
 
-export default useAuthentication;
+export default useOcAuthentication;

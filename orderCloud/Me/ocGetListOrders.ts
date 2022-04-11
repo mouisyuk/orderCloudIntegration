@@ -1,7 +1,7 @@
 import { Me } from 'ordercloud-javascript-sdk';
 
-const getListOrders = async (listOptions?) => {
+const ocGetListOrders = async (listOptions?) => {
     return await Me.ListOrders(listOptions);
 };
 
-export default getListOrders;
+export default ocGetListOrders;

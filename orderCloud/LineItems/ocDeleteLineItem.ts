@@ -1,6 +1,6 @@
 import { LineItems } from 'ordercloud-javascript-sdk';
 
-const deleteLineItem = async({direction, orderID, lineItemID}) => {
+const ocDeleteLineItem = async({direction, orderID, lineItemID}) => {
     let isDeletedLineItem = false;
 
     try {
@@ -13,4 +13,4 @@ const deleteLineItem = async({direction, orderID, lineItemID}) => {
     return isDeletedLineItem;
 };
 
-export default deleteLineItem;
+export default ocDeleteLineItem;

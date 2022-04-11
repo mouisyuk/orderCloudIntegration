@@ -1,7 +1,7 @@
 import { Orders } from 'ordercloud-javascript-sdk';
 import { v4 } from 'uuid';
 
-const createNewOrder = async (direction) => {
+const ocCreateNewOrder = async (direction) => {
     try {
         return await Orders.Create(direction, {
             ID: `Order_${v4()}`,
@@ -16,4 +16,4 @@ const createNewOrder = async (direction) => {
     }
 };
 
-export default createNewOrder;
+export default ocCreateNewOrder;

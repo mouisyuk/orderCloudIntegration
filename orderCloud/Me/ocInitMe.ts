@@ -2,7 +2,7 @@ import { Tokens } from 'ordercloud-javascript-sdk';
 import jwt_decode from "jwt-decode";
 import authenticated from '~/middleware/authenticated';
 
-const initMe = async () => {
+const ocInitMe = async () => {
     await authenticated();
     const initialAccessToken = Tokens.GetAccessToken();
     let isAnonymous = true;
@@ -19,4 +19,4 @@ const initMe = async () => {
     };
 };
 
-export default initMe;
+export default ocInitMe;

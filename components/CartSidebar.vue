@@ -20,7 +20,7 @@
           <div class="collected-product-list">
             <transition-group name="sf-fade" tag="div">
               <SfCollectedProduct
-                v-for="item in orderStore.lineItems.Items"
+                v-for="item in lineItems.Items"
                 :key="item.ID"
                 v-e2e="'collected-product'"
                 :image="productImage(item)"
@@ -116,7 +116,7 @@ import {
 import { computed, onMounted } from '@nuxtjs/composition-api';
 import { useCart, useUser, cartGetters } from '@vue-storefront/shopify';
 import { useUiState, useUiNotification } from '~/composables';
-import { useMeStore, useOrderStore } from '~/store';
+import { useMeStore, useOrderStore, useLineItemsStore } from '~/store';
 import _ from 'lodash';
 import { storeToRefs } from 'pinia'
 
@@ -139,8 +139,10 @@ export default {
     const { isAuthenticated } = useUser();
     const { send: sendNotification, notifications } = useUiNotification();
     const meStore = useMeStore();
-    // const { orders } = storeToRefs(meStore);
-    const orderStore = useOrderStore();
+    const { deleteOrder } = useOrderStore();
+    const lineItemsStore = useLineItemsStore();
+    const { updateLineItem, deleteLineItem } = lineItemsStore;
+    const { lineItems } = storeToRefs(lineItemsStore);
     const totals = computed(() => cartGetters.getTotals(cart.value));
     const lineItemsSubtotalPrice = computed(() => cartGetters.getSubTotal(cart.value));
     const totalItems = computed(() => meStore.orders?.Items[0]?.LineItemCount);
@@ -156,20 +158,21 @@ export default {
     const productImage  = computed(() => (item) => _.get(item, 'Product.xp.Images[0].Url'));
 
     const updateQuantity = _.debounce(async ({ item, Quantity }) => {
-      await orderStore.updateQuantity({
+      await updateLineItem({
         direction: 'outgoing',
         lineItemID: item.ID,
+        orderID: _.get(meStore, 'orders.Items[0].ID'),
         ProductID: item.ProductID,
         Quantity
       });
     }, 500);
 
     const removeItem = async (itemId) => {
-      await orderStore.deleteLineItem(itemId);
+      await deleteLineItem(itemId);
     };
 
     const handleDeleteOrder = async () => {
-      await orderStore.deleteOrder({
+      await deleteOrder({
         direction: "outgoing",
         orderID: _.get(meStore, 'orders.Items[0].ID')
       });
@@ -178,7 +181,7 @@ export default {
     return {
       updateQuantity,
       loading,
-      orderStore,
+      lineItems,
       isAuthenticated,
       removeItem,
       handleCheckout,

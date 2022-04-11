@@ -39,7 +39,7 @@ import {
   useCart,
 } from '@vue-storefront/shopify';
 import { computed, onBeforeMount } from '@nuxtjs/composition-api';
-import { useMeStore, useOrderStore } from '~/store';
+import { useMeStore, useOrderStore, useAuthenticationStore } from '~/store';
 import { storeToRefs } from 'pinia'
 
 export default {
@@ -56,14 +56,14 @@ export default {
     Notification: () => import('~/components/Notification'),
   },
   setup(_, { root }) {
-    const { load: loadCart, cart } = useCart();
     const meStore = useMeStore();
     const orderStore = useOrderStore();
+    const authenticationStore = useAuthenticationStore();
     const getCartTotalItems = computed(() => meStore.orders?.Items[0]?.LineItemCount);
-    const { isAnonymous } = storeToRefs(meStore);
+    const { isAnonymous } = storeToRefs(authenticationStore);
 
     onBeforeMount(async () => {
-      await meStore.initializeAuth();
+      await meStore.initializeMe();
       await meStore.getMyOrders({
         filters: {
           Status: 'Unsubmitted'

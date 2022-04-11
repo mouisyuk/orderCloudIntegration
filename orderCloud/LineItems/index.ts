@@ -1,13 +1,13 @@
-import createLineItem from './createLineItem';
-import getListOfLineItems from './getListOfLineItems';
-import deleteLineItem from './deleteLineItem';
-import updateLineItem from './updateLineItem';
+import ocCreateLineItem from './ocCreateLineItem';
+import ocGetListOfLineItems from './ocGetListOfLineItems';
+import ocDeleteLineItem from './ocDeleteLineItem';
+import ocUpdateLineItem from './ocUpdateLineItem';
 
-const useLineItems = () => ({
-    createLineItem,
-    getListOfLineItems,
-    deleteLineItem,
-    updateLineItem
+const useOcLineItems = () => ({
+    ocCreateLineItem,
+    ocGetListOfLineItems,
+    ocDeleteLineItem,
+    ocUpdateLineItem
 });
 
-export default useLineItems;
+export default useOcLineItems;

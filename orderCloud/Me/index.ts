@@ -1,7 +1,19 @@
-import getListOrders from './getListOrders';
+import ocGetListOrders from './ocGetListOrders';
+import ocGetListCategories from './ocGetListCategories';
+import ocGetSingleCategory from './ocGetSingleCategory';
+import ocInitMe from './ocInitMe';
+import ocGetProduct from './ocGetProduct';
+import ocListProducts from './ocListProducts';
+import ocTransferOrder from './ocTransferOrder';
 
-const useMe = () => ({
-    getListOrders
+const useOcMe = () => ({
+    ocGetListOrders,
+    ocGetListCategories,
+    ocGetSingleCategory,
+    ocGetProduct,
+    ocListProducts,
+    ocInitMe,
+    ocTransferOrder
 });
 
-export default useMe;
+export default useOcMe;

@@ -1,63 +1,58 @@
 import { defineStore } from 'pinia'
-import useProducts from '~/orderCloud/Products';
-import useCategories from '~/orderCloud/Categories';
-import useAuthentication from '~/orderCloud/Authentication';
-import useMe from '~/orderCloud/Me';
+import useOcMe from '~/orderCloud/Me';
+import useAuthenticationStore from '../Authentication';
 import _ from 'lodash';
-const { register, logIn, initMe } = useAuthentication();
-const { listProducts, getProduct } = useProducts();
-const { getListCategories, getSingleCategory } = useCategories();
-const { getListOrders } = useMe();
+const { 
+    ocGetListOrders,
+    ocInitMe,
+    ocGetListCategories,
+    ocGetSingleCategory,
+    ocListProducts,
+    ocGetProduct,
+    ocTransferOrder
+} = useOcMe();
 
 const useMeStore = defineStore('me', {
     state: () => ({
-        ListProducts: {
+        listProducts: {
             Items: [],
             Meta: {}
         },
-        Categories: {
+        categories: {
             Items: [],
             Meta: {}
         },
-        isAnonymous: true,
-        decodedToken: null,
         orders: {
             Items: [],
-            Meta: []
+            Meta: {}
         }
     }),
     actions: {
-        async initializeAuth() {
-            const {isAnonymous, decodedToken} = await initMe();
-            this.isAnonymous = isAnonymous;
-            this.decodedToken = decodedToken
+        async initializeMe() {
+            const {isAnonymous, decodedToken} = await ocInitMe();
+            const authenticationStore = useAuthenticationStore();
+            
+            authenticationStore.isAnonymous = isAnonymous;
+            authenticationStore.decodedToken = decodedToken
         },
-        async createAccount(userData) {
-            await register(userData);
-        },
-        async login(userData) {
-            const { decodedToken } = await logIn(userData);
-
-            if(decodedToken) {
-                this.decodedToken = decodedToken;
-                this.isAnonymous = false;
-            }
+        async transferOrder(anonUserToken) {
+            await ocTransferOrder(anonUserToken);
         },
         async getListProducts(listOptions?) {
-            this.ListProducts = await listProducts(listOptions);
-            return this.ListProducts;
+            this.listProducts = await ocListProducts(listOptions);
+            return this.listProducts;
         },
         async getProductById(id) {
-            return await getProduct(id);
+            return await ocGetProduct(id);
         },
         async getCategories() {
-            this.Categories = await getListCategories();
+            this.categories = await ocGetListCategories();
         },
         async getCategoryById(id) {
-            return await getSingleCategory(id);
+            return await ocGetSingleCategory(id);
         },
         async getMyOrders(listOptions?) {
-            const orders = await getListOrders(listOptions);
+            const orders = await ocGetListOrders(listOptions);
             this.orders = orders;
         }
     }

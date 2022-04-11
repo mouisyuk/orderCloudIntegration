@@ -1,6 +1,6 @@
 import { Me } from 'ordercloud-javascript-sdk';
 
-const getProduct = async (id) => {
+const ocGetProduct = async (id) => {
     try {
         const response = await Me.GetProduct(id);
 
@@ -10,4 +10,4 @@ const getProduct = async (id) => {
     }
 };
 
-export default getProduct;
+export default ocGetProduct;

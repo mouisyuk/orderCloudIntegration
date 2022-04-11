@@ -90,19 +90,19 @@
             class="products__grid"
           >
             <SfProductCard
-              v-for="(Product, i) in meStore.ListProducts.Items"
-              :key="Product.ID"
+              v-for="(product, i) in listProducts.Items"
+              :key="product.ID"
               data-cy="category-product-card"
               :style="{ '--index': i }"
-              :title="Product.Name"
-              :image="getDataFromArr(Product.xp.Images, 'Url')"
+              :title="product.Name"
+              :image="getDataFromArr(product.xp.Images, 'Url')"
               imageHeight="220"
               class="products__product-card"
               :show-add-to-cart-button="true"
     
-              :regularPrice="`${Product.xp.Currency} ${getDataFromArr(Product.PriceSchedule.PriceBreaks, 'Price')}`"
-              :link="localePath(`/p/${Product.ID}/${Product.xp.CategorySeoName}/`)"
-              @click:add-to-cart="handleAddTocart({ProductID: Product.ID, Quantity: 1, direction: 'outgoing'})"
+              :regularPrice="`${product.xp.Currency} ${getDataFromArr(product.PriceSchedule.PriceBreaks, 'Price')}`"
+              :link="localePath(`/p/${product.ID}/${product.xp.CategorySeoName}/`)"
+              @click:add-to-cart="handleAddTocart({ProductID: product.ID, Quantity: 1, direction: 'outgoing'})"
             >
               <template slot="wishlist-icon">
                 <span></span>
@@ -117,25 +117,25 @@
             class="products__list"
           >
             <SfProductCardHorizontal
-              v-for="(Product, i) in meStore.ListProducts.Items"
-              :key="Product.ID"
-              v-model="Product.QuantityMultiplier"
+              v-for="(product, i) in listProducts.Items"
+              :key="product.ID"
+              v-model="product.QuantityMultiplier"
               data-cy="category-product-cart_wishlist"
               :style="{ '--index': i }"
-              :title="Product.Name"
-              :description="Product.Description"
-              :image="getDataFromArr(Product.xp.Images, 'Url')"
-              :regularPrice="`${Product.xp.Currency} ${getDataFromArr(Product.PriceSchedule.PriceBreaks, 'Price')}`"
+              :title="product.Name"
+              :description="product.Description"
+              :image="getDataFromArr(product.xp.Images, 'Url')"
+              :regularPrice="`${product.xp.Currency} ${getDataFromArr(product.PriceSchedule.PriceBreaks, 'Price')}`"
               :is-on-wishlist="false"
               class="products__product-card-horizontal"
-              :link="localePath(`/p/${Product.ID}/${Product.xp.CategorySeoName}/`)"
-              @click:add-to-cart="handleAddTocart({ProductID: Product.ID, Quantity: Product.QuantityMultiplier, direction: 'outgoing'})"
+              :link="localePath(`/p/${product.ID}/${product.xp.CategorySeoName}/`)"
+              @click:add-to-cart="handleAddTocart({ProductID: product.ID, Quantity: product.QuantityMultiplier, direction: 'outgoing'})"
             >
               <template slot="wishlist-icon">
                 <span></span>
               </template>
               <template slot="description">
-                <div v-html="Product.Description"></div>
+                <div v-html="product.Description"></div>
               </template>
             </SfProductCardHorizontal>
           </transition-group>
@@ -272,9 +272,8 @@ import {
   facetGetters
 } from '@vue-storefront/shopify';
 import { useUiHelpers, useUiState, useUiNotification } from '~/composables';
-import { onSSR } from '@vue-storefront/core';
-import useProducts from '~/orderCloud/Products/index';
 import { useMeStore, useOrderStore } from '~/store';
+import { storeToRefs } from 'pinia'
 
 export default {
   components: {
@@ -301,9 +300,9 @@ export default {
     const { send: sendNotification } = useUiNotification();
     const { result, search, loading } = useFacet();
     const meStore = useMeStore();
-    const ordersStore = useOrderStore();
-    const products = computed(() => facetGetters.getProducts(result.value));
-    // const sortBy = computed(() => facetGetters.getSortOptions(result.value));
+    const {getListProducts} = meStore;
+    const { listProducts } = storeToRefs(meStore);
+    const { addProductToOrder } = useOrderStore();
     const facets = computed(() =>
       facetGetters.getGrouped(result.value, ['color', 'size'])
     );
@@ -320,14 +319,14 @@ export default {
     });
 
     const handleAddTocart = async (productData) => {
-      await ordersStore.addProductToOrder(productData);
+      await addProductToOrder(productData);
     };
 
     const { isFacetColor } = useUiHelpers();
     const { toggleCategoryGridView } = useUiState();
 
     onMounted(async () => {
-      await meStore.getListProducts({categoryId});
+      await getListProducts({categoryId});
       categoryLoading.value = false;
       context.root.$scrollTo(context.root.$el, 2000);
     });
@@ -336,14 +335,13 @@ export default {
       ...uiState,
       th,
       categoryLoading,
-      products,
       loading,
       productGetters,
       pagination,
       // sortBy,
       facets,
       currentCart,
-      meStore,
+      listProducts,
       getDataFromArr,
       sendNotification,
       addItemToCart,
