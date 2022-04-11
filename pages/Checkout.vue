@@ -1,6 +1,6 @@
 <template>
   <div id="checkout">
-    <div class="checkout">
+    <!-- <div class="checkout">
       <div class="checkout__main">
         <SfSteps
           v-if="!isThankYou"
@@ -26,13 +26,13 @@
           <CartPreview key="order-summary" />
         </transition>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
 
 import { SfSteps, SfButton } from '@storefront-ui/vue';
-import CartPreview from '~/components/Checkout/CartPreview';
+// import CartPreview from '~/components/Checkout/CartPreview';
 import { computed, useRoute, useRouter } from '@nuxtjs/composition-api';
 
 const STEPS = {
@@ -46,27 +46,27 @@ export default {
   components: {
     SfButton,
     SfSteps,
-    CartPreview
+    // CartPreview
   },
   setup() {
-    const route = useRoute();
-    const router = useRouter();
-    const currentStep = computed(() => route.value.path.split('/').pop());
-    const currentStepIndex = computed(() => Object.keys(STEPS).findIndex(s => s === currentStep.value));
-    const isThankYou = computed(() => currentStep.value === 'thank-you');
+    // const route = useRoute();
+    // const router = useRouter();
+    // const currentStep = computed(() => route.value.path.split('/').pop());
+    // const currentStepIndex = computed(() => Object.keys(STEPS).findIndex(s => s === currentStep.value));
+    // const isThankYou = computed(() => currentStep.value === 'thank-you');
 
-    const handleStepClick = (stepIndex) => {
-      const key = Object.keys(STEPS)[stepIndex];
-      router.push(`/checkout/${key}`);
-    };
+    // const handleStepClick = (stepIndex) => {
+    //   const key = Object.keys(STEPS)[stepIndex];
+    //   router.push(`/checkout/${key}`);
+    // };
 
-    return {
-      handleStepClick,
-      STEPS,
-      currentStepIndex,
-      isThankYou,
-      currentStep
-    };
+    // return {
+    //   handleStepClick,
+    //   STEPS,
+    //   currentStepIndex,
+    //   isThankYou,
+    //   currentStep
+    // };
   }
 };
 </script>
