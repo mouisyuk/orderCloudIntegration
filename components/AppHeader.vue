@@ -2,7 +2,6 @@
   <div>
     <SfHeader
       data-cy="app-header"
-      :search-value="term"
       :cart-items-qty="cartTotalItems"
       :account-icon="accountIcon"
       class="sf-header--has-mobile-search"
@@ -17,7 +16,7 @@
       <template #logo>
         <nuxt-link :to="localePath('/')" class="sf-header__logo">
           <SfImage
-            src="/icons/logo.svg"
+            src="/icons/logo.png"
             alt="Vue Storefront Next"
             class="sf-header__logo-image"
           />
@@ -27,12 +26,12 @@
       <template v-if="categories.length > 0" #navigation>
         <div class="navigation-wrapper">
           <SfHeaderNavigationItem
-            v-for="Category in meStore.Categories.Items"
+            v-for="Category in categories"
             :key="Category.ID"
             class="nav-item"
             :data-cy="'app-header-url_' + Category.Name"
             :label="Category.Name"
-            :link="localePath(`/c/${Category.Name}/${Category.ID}`)"
+            :link="Category.link || localePath(`/c/${Category.Name}/${Category.ID}`)"
           />
         </div>
       </template>
@@ -103,14 +102,13 @@ import {
   SfOverlay
 } from '@storefront-ui/vue';
 import SearchResults from './SearchResults.vue';
-import debounce from 'lodash/debounce';
 import useUiState from '~/composables/useUiState';
 import { onSSR } from '@vue-storefront/core';
 import { computed, ref, useRouter, onMounted } from '@nuxtjs/composition-api';
 import useUiHelpers from '~/composables/useUiHelpers';
 import LocaleSelector from './LocaleSelector';
 import { useMeStore } from '~/store';
-import { searchGetters, useCategory, useSearch, useWishlist } from '@vue-storefront/shopify';
+import { v4 } from 'uuid';
 
 export default {
   components: {
@@ -135,15 +133,33 @@ export default {
   setup(props) {
     const { toggleCartSidebar, toggleWishlistSidebar, toggleLoginModal } = useUiState();
     const { changeSearchTerm, getFacetsFromURL } = useUiHelpers();
-    const { search: headerSearch, result } = useSearch('header-search');
-    const { search, categories } = useCategory('menuCategories');
-    const { load: loadWishlist } = useWishlist('header-wishlist');
     const router = useRouter();
 
     const curCatSlug = ref(getFacetsFromURL().categorySlug);
     const accountIcon = computed(() =>
       props.isUserAuthenticated ? 'profile_fill' : 'profile'
     );
+
+    const categories = computed(() => {
+      return [
+        ...meStore.Categories.Items,
+        {
+          Name: 'Tutorials',
+          ID: v4(),
+          link: `/Tutorials`
+        },
+        {
+          Name: 'Investor relations',
+          ID: v4(),
+          link: `/InvestorRelations`
+        },
+        {
+          Name: 'Locations',
+          ID: v4(),
+          link: `/Locations`
+        }
+      ]
+    });
 
     // TODO: https://github.com/DivanteLtd/vue-storefront/issues/4927
     const handleAccountClick = () => {
@@ -156,45 +172,45 @@ export default {
     // #region Search Section
     const isSearchOpen = ref(false);
     const searchResults = ref(null);
-    const term = ref(getFacetsFromURL().term);
-    const handleSearch = debounce(async (searchTerm) => {
-      if (!searchTerm.target) {
-        term.value = searchTerm;
-      } else {
-        term.value = searchTerm.target.value;
-      }
+    // const term = ref(getFacetsFromURL().term);
+    // const handleSearch = debounce(async (searchTerm) => {
+    //   if (!searchTerm.target) {
+    //     term.value = searchTerm;
+    //   } else {
+    //     term.value = searchTerm.target.value;
+    //   }
 
-      await headerSearch({
-        term: term.value
-      });
-    }, 500);
-    const closeSearch = () => {
-      if (!isSearchOpen.value) return;
-      term.value = '';
-      isSearchOpen.value = false;
-    };
+    //   await headerSearch({
+    //     term: term.value
+    //   });
+    // }, 500);
+    // const closeSearch = () => {
+    //   if (!isSearchOpen.value) return;
+    //   term.value = '';
+    //   isSearchOpen.value = false;
+    // };
     const meStore = useMeStore();
 
 
-    searchResults.value = {
-      products: computed(() => searchGetters.getItems(result.value))
-    };
+    // searchResults.value = {
+    //   products: computed(() => searchGetters.getItems(result.value))
+    // };
     // #endregion Search Section
     onSSR(async () => {
       await meStore.getCategories();
-      await loadWishlist();
-      await search({ slug: '' });
+      // await loadWishlist();
+      // await search({ slug: '' });
     });
 
     return {
       accountIcon,
-      closeSearch,
+      // closeSearch,
       handleAccountClick,
       toggleCartSidebar,
       toggleWishlistSidebar,
       changeSearchTerm,
-      term,
-      handleSearch,
+      // term,
+      // handleSearch,
       curCatSlug,
       searchResults,
       categories,

@@ -319,15 +319,15 @@ export default {
       }
     });
 
-    const handleAddTocart = (productData) => {
-      ordersStore.addProductToOrder(productData);
+    const handleAddTocart = async (productData) => {
+      await ordersStore.addProductToOrder(productData);
     };
 
     const { isFacetColor } = useUiHelpers();
     const { toggleCategoryGridView } = useUiState();
 
     onMounted(async () => {
-      await meStore.getListProducts(categoryId);
+      await meStore.getListProducts({categoryId});
       categoryLoading.value = false;
       context.root.$scrollTo(context.root.$el, 2000);
     });

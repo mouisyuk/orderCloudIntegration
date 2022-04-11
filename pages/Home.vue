@@ -13,39 +13,23 @@
       />
     </SfHero>
     <LazyHydrate when-visible>
-      <SfBannerGrid :banner-grid="1" class="banner-grid">
-        <template v-for="item in banners" #[item.slot]>
-          <SfBanner
-            :key="item.slot"
-            :title="item.title"
-            :subtitle="item.subtitle"
-            :description="item.description"
-            :button-text="item.buttonText"
-            :image="item.image"
-            :class="item.class"
-          />
-        </template>
-      </SfBannerGrid>
-    </LazyHydrate>
-    <LazyHydrate when-visible>
       <RelatedProducts
         :products="products"
         :loading="productsLoading"
-        title="Match it with"
-      />
-    </LazyHydrate>
-
-    <LazyHydrate when-visible>
-      <SfCallToAction
-        title="Subscribe to Newsletters"
-        button-text="Subscribe"
-        description="Be aware of upcoming sales and events. Receive gifts and special offers!"
-        image="https://cdn.shopify.com/s/files/1/0407/1902/4288/files/newsletter_1240x202.jpg?v=1616496568"
-        class="call-to-action"
+        title="Related products"
       />
     </LazyHydrate>
     <LazyHydrate when-visible>
-      <MobileStoreBanner />
+      <SfSection
+        titleHeading="Yamama Cement Company | Saudi Arabia"
+        :levelHeading="2"
+        class="video-section"
+      >
+        <iframe
+          class="frame-video"
+          src="https://www.youtube.com/embed/BkB8hXlroXY"
+        ></iframe>
+      </SfSection>
     </LazyHydrate>
   </div>
 </template>
@@ -63,17 +47,14 @@ import {
   SfButton
 } from '@storefront-ui/vue';
 import {
-  useProduct,
-  useCart,
-  productGetters
-} from '@vue-storefront/shopify';
-import {
+  ref,
   computed,
-  onBeforeMount
+  onMounted
 } from '@nuxtjs/composition-api';
 import LazyHydrate from 'vue-lazy-hydration';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
 import RelatedProducts from '~/components/RelatedProducts.vue';
+import { useMeStore } from '~/store';
 
 export default {
   name: 'Home',
@@ -94,141 +75,41 @@ export default {
   },
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup(contect) {
-    const {
-      products: relatedProducts,
-      search: productsSearch,
-      loading: productsLoading
-    } = useProduct('relatedProducts');
-    const { cart, addItem: addToCart, isInCart } = useCart();
+    const productsLoading = ref(true);
+    const meStore = useMeStore();
+    const heroes = [
+      {
+        background: '#eceff1',
+        image: {
+          desktop:
+            '/homepage/yamamaBulding2.jpg'
+        }
+      },
+      {
+        background: '#eceff1',
+        image: {
+          desktop:
+            '/homepage/banner2.png'
+        }
+      }
+      
+    ];
 
-    onBeforeMount(async () => {
-      await productsSearch({ limit: 8 });
+    const products = computed(() => meStore?.ListProducts?.Items)
+
+    onMounted(async () => {
+      await meStore.getListProducts({pageSize: '4'});
+      productsLoading.value = false;
     });
+
     return {
-      products: computed(() =>
-        productGetters.getFiltered(relatedProducts.value, { master: true })
-      ),
-      getChkId: computed(() => cart.value.id),
       productsLoading,
-      productGetters,
-      addToCart,
-      isInCart
+      meStore,
+      heroes,
+      products
     };
   },
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  data() {
-    return {
-      heroes: [
-        {
-          title: 'Colorful summer dresses are already in store',
-          subtitle: 'SUMMER COLLECTION 2021',
-          buttonText: 'Learn more',
-          background: '#eceff1',
-          image: {
-            mobile:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerB_328x224.jpg',
-            desktop:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerB_1240x400.jpg'
-          },
-          link: '/c/women/women-clothing-shirts'
-        },
-        {
-          title: 'Colorful summer dresses are already in store',
-          subtitle: 'SUMMER COLLECTION 2021',
-          buttonText: 'Learn more',
-          background: '#fce4ec',
-          image: {
-            mobile:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerH_328x224.jpg',
-            desktop:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerH_1240x400.jpg'
-          },
-          link: '/c/women/women-clothing-dresses'
-        },
-        {
-          title: 'Colorful summer dresses are already in store',
-          subtitle: 'SUMMER COLLECTION 2021',
-          buttonText: 'Learn more',
-          background: '#efebe9',
-          image: {
-            mobile:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerA_328x224.jpg',
-            desktop:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerA_1240x400.jpg'
-          },
-          link: '/c/women/women-shoes-sandals',
-          className:
-            'sf-hero-item--position-bg-top-left sf-hero-item--align-right'
-        }
-      ],
-      banners: [
-        {
-          slot: 'banner-A',
-          subtitle: 'Dresses',
-          title: 'Cocktail & Party',
-          description:
-            'Find stunning women\'s cocktail dresses and party dresses. Stand out in lace and metallic cocktail dresses from all your favorite brands.',
-          buttonText: 'Shop now',
-          image: {
-            mobile:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerB_328x343.jpg',
-            desktop:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerF_332x840.jpg'
-          },
-          class: 'sf-banner--slim desktop-only',
-          link: '/c/women/women-clothing-skirts'
-        },
-        {
-          slot: 'banner-B',
-          subtitle: 'Dresses',
-          title: 'Linen Dresses',
-          description:
-            'Find stunning women\'s cocktail dresses and party dresses. Stand out in lace and metallic cocktail dresses from all your favorite brands.',
-          buttonText: 'Shop now',
-          image: {
-            mobile:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerE_328x343.jpg',
-            desktop:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerE_496x840.jpg'
-          },
-          class: 'sf-banner--slim banner-central desktop-only',
-          link: '/c/women/women-clothing-dresses'
-        },
-        {
-          slot: 'banner-C',
-          subtitle: 'T-Shirts',
-          title: 'The Office Life',
-          image: {
-            mobile:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerC_328x343.jpg',
-            desktop:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerC_332x400.jpg'
-          },
-          class: 'sf-banner--slim banner__tshirt',
-          link: '/c/women/women-clothing-shirts'
-        },
-        {
-          slot: 'banner-D',
-          subtitle: 'Summer Sandals',
-          title: 'Eco Sandals',
-          image: {
-            mobile:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerG_328x343.jpg',
-            desktop:
-              'https://cdn.shopify.com/s/files/1/0407/1902/4288/files/bannerG_332x400.jpg'
-          },
-          class: 'sf-banner--slim',
-          link: '/c/women/women-shoes-sandals'
-        }
-      ]
-    };
-  },
-  methods: {
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    toggleWishlist(index) {
-      this.products[index].isInWishlist = !this.products[index].isInWishlist;
-    }
-  }
 };
 </script>
 
@@ -332,5 +213,14 @@ export default {
     -webkit-transform-origin: center;
     transform-origin: center;
   }
+}
+
+.video-section {
+  margin: 2.5rem 0;
+}
+
+.frame-video {
+  width: 100%;
+  height: 600px;
 }
 </style>

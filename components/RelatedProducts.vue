@@ -9,35 +9,21 @@
       >
         <SfCarouselItem v-for="(product, i) in products" :key="i" class="carousel__item">
           <SfProductCard
-            :title="productGetters.getName(product)"
-            :image="productGetters.getPDPCoverImage(product)"
-            :link="localePath(`/p/${productGetters.getId(product)}/${productGetters.getSlug(product)}`)"
+            :title="product.Name"
+            :image="getDataFromArr(product.xp.Images, 'Url')"
+            :link="localePath(`/p/${product.ID}/${product.xp.CategorySeoName}/`)"
             :wishlist-icon="false"
-            :image-width="295"
             :image-height="295"
             class="pdp-product-card"
+            @click:add-to-cart="handleAddTocart({ProductID: product.ID, Quantity: 1, direction: 'outgoing'})"
           >
-            <template #title>
-              <!-- RYVIU APP :: COLLECTION-WIDGET-TOTAL -->
-              <SfLink
-                class="sf-product-card__link"
-                :link="localePath(`/p/${productGetters.getId(product)}/${productGetters.getSlug(product)}`)"
-              >
-                  <h3 class="sf-product-card__title">
-                  {{ productGetters.getName(product) }}
-                </h3>
-              </SfLink>
-            </template>
             <template #price>
               <SfPrice
                 class="sf-product-card__price"
               >
-                <template v-if="productGetters.getPrice(product).special" #special>
-                  <ins class="sf-price__special">{{ $n(productGetters.getPrice(product).special, 'currency') }}</ins>
-                </template>
                 <template #old><span/></template>
-                <template v-if="productGetters.getPrice(product).regular > 0" #regular>
-                  <del class="sf-price__old">{{ $n(productGetters.getPrice(product).regular, 'currency') }}</del>
+                <template #regular>
+                  <span>{{ `${product.xp.Currency} ${getDataFromArr(product.PriceSchedule.PriceBreaks, 'Price')}` }} </span>
                 </template>
               </SfPrice>
             </template>
@@ -58,7 +44,8 @@ import {
   SfLink,
   SfPrice
 } from '@storefront-ui/vue';
-import { productGetters } from '@vue-storefront/shopify';
+import { computed } from '@nuxtjs/composition-api';
+import { useOrderStore } from '~/store';
 
 export default {
   name: 'RelatedProducts',
@@ -77,7 +64,23 @@ export default {
   },
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
-    return { productGetters };
+    const ordersStore = useOrderStore();
+    const getDataFromArr = computed(() => {
+      return (arr, property) => {
+        if(arr.length == 0) return '';
+
+        return arr[0][property];
+      }
+    });
+
+    const handleAddTocart = async (productData) => {
+      await ordersStore.addProductToOrder(productData);
+    };
+
+    return {
+      getDataFromArr,
+      handleAddTocart
+    };
   },
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   data () {
@@ -121,7 +124,6 @@ export default {
 <style lang="scss">
 .pdp-upsell-section {
   margin: 0;
-  padding-bottom: 164px;
   @include for-mobile {
     padding-bottom: 40px;
   }

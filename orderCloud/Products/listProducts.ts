@@ -1,10 +1,8 @@
 import { Products, Me } from 'ordercloud-javascript-sdk';
 
-const listProducts = async (categoryID?: string) => {
+const listProducts = async (listOptions?) => {
     try {
-        const response = await Me.ListProducts({catalogID: '0001',categoryID});
-
-        return response;
+        return await Me.ListProducts({catalogID: '0001', ...listOptions});
     } catch(err) {
         console.error(err);
     }

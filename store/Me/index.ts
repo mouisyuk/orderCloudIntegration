@@ -12,11 +12,11 @@ const { getListOrders } = useMe();
 const useMeStore = defineStore('me', {
     state: () => ({
         ListProducts: {
-            Items: {},
+            Items: [],
             Meta: {}
         },
         Categories: {
-            Items: {},
+            Items: [],
             Meta: {}
         },
         isAnonymous: true,
@@ -43,8 +43,8 @@ const useMeStore = defineStore('me', {
                 this.isAnonymous = false;
             }
         },
-        async getListProducts(categoryId?) {
-            this.ListProducts = await listProducts(categoryId);
+        async getListProducts(listOptions?) {
+            this.ListProducts = await listProducts(listOptions);
             return this.ListProducts;
         },
         async getProductById(id) {
