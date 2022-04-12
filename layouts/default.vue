@@ -38,7 +38,7 @@ import {
   cartGetters,
   useCart,
 } from '@vue-storefront/shopify';
-import { computed, onBeforeMount } from '@nuxtjs/composition-api';
+import { computed, onBeforeMount, onMounted } from '@nuxtjs/composition-api';
 import { useMeStore, useOrderStore, useAuthenticationStore } from '~/store';
 import { storeToRefs } from 'pinia'
 
@@ -73,6 +73,10 @@ export default {
         direction: "outgoing",
         orderID: meStore?.orders?.Items[0]?.ID
       });
+    });
+
+    onMounted(() => {
+      console.log(process.env.NODE_ENV, '------- ENV ------');
     });
 
     return {
