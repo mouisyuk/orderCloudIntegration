@@ -3,7 +3,7 @@
     <TopBar class="desktop-only" />
     <AppHeader
       :cart-total-items="getCartTotalItems"
-      :is-user-authenticated="!isAnonymous"
+      :is-user-authenticated="!authenticationStore.isAnonymous"
     />
       <SfLoader
         v-if="appLoading"
@@ -69,7 +69,6 @@ export default {
     const appLoading = ref(true);
     const authenticationStore = useAuthenticationStore();
     const getCartTotalItems = computed(() => meStore.orders?.Items[0]?.LineItemCount);
-    const { isAnonymous } = storeToRefs(authenticationStore);
 
     const initData = async() => {
       await meStore.initializeMe();
@@ -86,7 +85,6 @@ export default {
       });
 
       appLoading.value = false;
-      console.log(isAnonymous,'=-=-=- isAnonymous =-=-=-=');
     };
 
     onMounted(async () => {
@@ -95,7 +93,7 @@ export default {
 
     return {
       getCartTotalItems,
-      isAnonymous,
+      authenticationStore,
       appLoading
     };
   },
