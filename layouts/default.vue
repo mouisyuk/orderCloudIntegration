@@ -33,14 +33,10 @@
 import AppHeader from '~/components/AppHeader.vue';
 import TopBar from '~/components/TopBar.vue';
 import LazyHydrate from 'vue-lazy-hydration';
-import {
-  useUser,
-  cartGetters,
-  useCart,
-} from '@vue-storefront/shopify';
-import { computed, onBeforeMount, onMounted } from '@nuxtjs/composition-api';
+import { computed, onMounted } from '@nuxtjs/composition-api';
 import { useMeStore, useOrderStore, useAuthenticationStore } from '~/store';
 import { storeToRefs } from 'pinia'
+import _ from 'lodash';
 
 export default {
   name: 'DefaultLayout',
@@ -55,14 +51,14 @@ export default {
     LoginModal: () => import('~/components/LoginModal.vue'),
     Notification: () => import('~/components/Notification'),
   },
-  setup(_, { root }) {
+  setup() {
     const meStore = useMeStore();
     const orderStore = useOrderStore();
     const authenticationStore = useAuthenticationStore();
     const getCartTotalItems = computed(() => meStore.orders?.Items[0]?.LineItemCount);
     const { isAnonymous } = storeToRefs(authenticationStore);
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
       await meStore.initializeMe();
       await meStore.getMyOrders({
         filters: {
@@ -70,9 +66,11 @@ export default {
         }
       });
 
-      if(meStore?.orders?.Items[0]) await orderStore.getWorksheet({
+      const orderID = _.get(meStore, 'orders.Items[0].ID');
+
+      if(orderID) await orderStore.getWorksheet({
         direction: "outgoing",
-        orderID: meStore?.orders?.Items[0].ID
+        orderID
       });
     });
 
