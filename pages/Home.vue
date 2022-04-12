@@ -95,7 +95,7 @@ export default {
       
     ];
 
-    const products = computed(() => meStore?.listProducts?.Items)
+    const products = computed(() => meStore.listProducts?.Items );
 
     onMounted(async () => {
       await meStore.getListProducts({pageSize: '4'});

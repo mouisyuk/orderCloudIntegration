@@ -151,5 +151,13 @@ export default {
   .glide__slide {
     height: auto;
   }
+
+  .carousel__item {
+    width: auto;
+  }
+
+  .glide__slides {
+    justify-content: space-between;
+  }
 }
 </style>
