@@ -1,6 +1,6 @@
 import { IntegrationEvents } from 'ordercloud-javascript-sdk';
 
-const getWorksheet = async ({direction, orderID}) => {
+const ocGetWorksheet = async ({direction, orderID}) => {
     try {
         return await IntegrationEvents.GetWorksheet(direction, orderID);
     } catch (err) {
@@ -8,4 +8,4 @@ const getWorksheet = async ({direction, orderID}) => {
     }
 };
 
-export default getWorksheet;
+export default ocGetWorksheet;

@@ -69,14 +69,11 @@ export default {
           Status: 'Unsubmitted'
         }
       });
-      await orderStore.getWorksheet({
-        direction: "outgoing",
-        orderID: meStore?.orders?.Items[0]?.ID
-      });
-    });
 
-    onMounted(() => {
-      console.log(process.env.NODE_ENV, '------- ENV ------');
+      if(meStore?.orders?.Items[0]) await orderStore.getWorksheet({
+        direction: "outgoing",
+        orderID: meStore?.orders?.Items[0].ID
+      });
     });
 
     return {
