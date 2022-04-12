@@ -86,6 +86,7 @@ export default {
       });
 
       appLoading.value = false;
+      console.log(isAnonymous,'=-=-=- isAnonymous =-=-=-=');
     };
 
     onMounted(async () => {
